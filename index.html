@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Jeep Transfer">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<title>Jeep Transfer</title>
+<style>
+:root{--black:#0B0B0C;--ink:#111113;--graph:#141416;--line:#3A3D42;--silver:#A7ADB5;--silver2:#C9CED6;--bg:#ECEDEF;--muted:#5F646C;--green:#16A34A;--red:#DC2626;--cond:"Barlow Condensed",-apple-system,"Arial Narrow",sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--black)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;color:#111827;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+input{font-family:inherit}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg);max-width:560px;margin:0 auto}
+.top{background:var(--black);border-bottom:2px solid var(--silver);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.date{font-size:12px;color:var(--silver);font-weight:500}
+.brand{font-family:var(--cond);font-weight:800;font-size:26px;letter-spacing:.06em;color:#fff;line-height:1.05;white-space:nowrap}
+.top>div:first-child{min-width:0}
+.top-right{display:flex;gap:8px;align-items:center}
+.pill{height:36px;padding:0 12px;border-radius:999px;display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;border:1px solid;white-space:nowrap}
+.pill.ok{background:#F0FDF4;color:#166534;border-color:#BBF7D0}
+.pill.wait{background:#FFFBEB;color:#92400E;border-color:#FDE68A}
+.pill.off{background:#F3F4F6;color:#374151;border-color:#D1D5DB}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:transparent;color:#fff;display:grid;place-items:center}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 28px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.card{background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.card h3{margin:0;font-size:15px;font-weight:700}
+.hero{background:var(--graph);border:1px solid var(--line);color:#fff;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.big{font-family:var(--cond);font-weight:700;font-size:52px;line-height:1;letter-spacing:.01em}
+.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
+.bar>div{height:100%;background:var(--green);border-radius:999px;transition:width .3s}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.muted{color:var(--muted)}.small{font-size:12px}.b{font-weight:700}
+.badge{font-size:11px;background:rgba(255,255,255,.14);padding:4px 8px;border-radius:999px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.kpi{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.kpi .l{font-size:12px;color:var(--muted);font-weight:500}
+.kpi .v{font-size:20px;font-weight:700}
+.kpi .s{font-size:12px;color:var(--muted)}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.btn{height:56px;border-radius:16px;border:none;font-size:17px;font-weight:700;width:100%}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.green{background:var(--green);color:#fff}
+.btn.danger{background:var(--red);color:#fff}
+.btn.odanger{background:#fff;color:var(--red);border:2px solid var(--red)}
+.btn.light{background:#fff;color:var(--ink);border:1px solid var(--silver2)}
+.btn.ghost{background:transparent;color:var(--muted);height:44px;font-size:14px}
+.btn.sm{height:48px;font-size:15px;width:auto;padding:0 16px}
+.chip{height:46px;border-radius:12px;border:1px solid var(--silver2);background:#fff;font-size:15px;font-weight:600;color:var(--ink);padding:0 6px}
+.chip.on{border:2px solid var(--ink);background:#E1E3E7}
+.seg{height:56px;border-radius:14px;font-size:18px;font-weight:700;border:1px solid var(--silver2);background:#fff;color:#111827}
+.seg.uber.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.seg.nn.on{background:var(--silver);color:var(--black);border-color:var(--silver)}
+.field{border-radius:16px;padding:14px;background:#fff;border:2px solid transparent;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:84px;color:#111827}
+.field.on{border-color:var(--black)}
+.field .l{font-size:12px;color:var(--muted);font-weight:500}
+.field .v{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.field .ph{font-size:18px;font-weight:600;color:#9AA0A8;padding-top:8px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.key{height:58px;border-radius:14px;border:none;background:#fff;font-size:24px;font-weight:600;color:#111827;box-shadow:0 1px 0 #D9DCE1}
+.key:active,.chip:active,.btn:active,.seg:active,.nb:active,.field:active{transform:scale(.97)}
+.rpk{background:var(--graph);color:#fff;border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.rpk span{font-size:13px;color:var(--silver2);font-weight:500}
+.rpk b{font-family:var(--cond);font-size:24px;letter-spacing:.02em}
+.tag{font-size:12px;font-weight:700;padding:4px 8px;border-radius:8px;flex:none}
+.tag.uber{background:var(--ink);color:#fff}.tag.nn{background:var(--silver2);color:var(--black)}
+.item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #F0F1F3;gap:10px}
+.item .left{display:flex;align-items:center;gap:10px;min-width:0;font-size:14px}
+.item .meta{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .val{font-size:15px;font-weight:600;white-space:nowrap}
+.del{width:36px;height:36px;border-radius:10px;border:1px solid var(--silver2);background:#fff;color:var(--muted);font-size:15px;flex:none}
+.jchip{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;align-self:flex-start}
+.card[style*="align-items:center"] .jchip{align-self:center}
+.j-on{color:#15803D;background:#DCFCE7}.j-pause{color:#B45309;background:#FEF3C7}.j-off{color:var(--muted);background:#F0F1F3}
+.timer{font-size:56px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1.05}
+.timer.sm{font-size:26px;font-weight:700}
+.in{height:56px;border-radius:12px;border:1px solid var(--silver2);padding:0 14px;font-size:22px;font-weight:600;width:100%;color:#111827;background:#fff;-webkit-appearance:none;appearance:none}
+.in.txt{font-size:15px;font-weight:500;height:50px}
+.lb{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);font-weight:500}
+.inline{display:flex;gap:8px;align-items:stretch}.inline .in{flex:1}
+.chart{position:relative;height:150px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;border-bottom:1px solid #E5E7EB}
+.chart .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.chart .bb{width:100%;max-width:30px;border-radius:6px 6px 2px 2px}
+.chart .lab{font-size:10px;color:var(--muted);font-weight:600}
+.metaline{position:absolute;left:0;right:0;border-top:2px dashed var(--green);opacity:.6;pointer-events:none}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;font-size:11px;color:var(--muted);font-weight:500}
+.split{display:flex;height:12px;border-radius:999px;overflow:hidden;background:#E5E7EB}
+.sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+.nav{background:#fff;border-top:1px solid #E5E7EB;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:4px 6px calc(6px + env(safe-area-inset-bottom))}
+.nb{border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted);min-height:54px;padding:0}
+.nb.on{color:var(--ink)}
+.fab{width:60px;height:60px;border-radius:20px;background:var(--ink);color:#fff;display:grid;place-items:center;margin:-22px auto 0;border:2px solid var(--silver);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.nb.on .fab{background:var(--black)}
+.toast{position:fixed;left:16px;right:16px;top:calc(76px + env(safe-area-inset-top));max-width:528px;margin:0 auto;background:#111113;color:#fff;border-radius:14px;padding:14px 16px;font-size:14px;font-weight:500;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin:0}
+.warn{background:#FFFBEB;border:1px solid #FDE68A;color:#92400E;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45}
+.hero .warn{background:rgba(253,230,138,.12);border-color:rgba(253,230,138,.35);color:#FDE68A}
+.empty{font-size:14px;color:var(--muted);padding:6px 0}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div>
+      <div class="date" id="date"></div>
+      <div class="brand">JEEP TRANSFER</div>
+    </div>
+    <div class="top-right">
+      <button class="pill off" id="net" data-act="sync" aria-label="Status de sincronização"><span class="dot"></span><span id="netTxt">...</span></button>
+      <button class="icon-btn" data-act="go" data-tab="config" aria-label="Configurações">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <nav class="nav" aria-label="Navegação principal">
+    <button class="nb" data-act="go" data-tab="home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>
+      <span>Início</span>
+    </button>
+    <button class="nb" data-act="go" data-tab="jornada">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2.5M9 2h6"></path></svg>
+      <span>Jornada</span>
+    </button>
+    <button class="nb" data-act="go" data-tab="lancar" aria-label="Lançar corrida">
+      <span class="fab"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+    </button>
+    <button class="nb" data-act="go" data-tab="custos">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2.5A1.5 1.5 0 0 1 18 10.5V16a1.5 1.5 0 0 0 3 0V8l-3-3M7 7h4"></path></svg>
+      <span>Custos</span>
+    </button>
+    <button class="nb" data-act="go" data-tab="hist">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+      <span>Histórico</span>
+    </button>
+  </nav>
+</div>
+
+<script src="core.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.JTCore;
+  var KEY = 'jt.db.v1';
+  var DEF_CFG = { meta: 35000, fuelPrice: 399, kmPerL: 8, url: '', token: '' };
+  var LISTS = { trip: 'trips', expense: 'expenses', session: 'sessions' };
+  var WD = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+  var db = load();
+  var ui = { tab: 'home', plat: 'uber', digits: '', kmStr: '', target: 'valor', cat: 'Lavagem', closing: false };
+  var syncing = false, lastErr = '', toastT = null;
+  var $main = document.getElementById('main');
+
+  /* ---------- persistência ---------- */
+  function load() {
+    try {
+      var d = JSON.parse(localStorage.getItem(KEY));
+      if (d && d.v === 1) {
+        d.cfg = Object.assign({}, DEF_CFG, d.cfg || {});
+        ['trips', 'expenses', 'sessions', 'outbox'].forEach(function (k) { if (!Array.isArray(d[k])) d[k] = []; });
+        return d;
+      }
+    } catch (e) {}
+    return { v: 1, trips: [], expenses: [], sessions: [], outbox: [], cfg: Object.assign({}, DEF_CFG), lastSync: 0 };
+  }
+  function persist() {
+    try { localStorage.setItem(KEY, JSON.stringify(db)); return true; }
+    catch (e) { toast('Erro ao salvar no aparelho. Exporte um backup em Configurações.'); return false; }
+  }
+  function uid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+  function put(rec) {
+    rec.upd = Date.now();
+    var list = db[LISTS[rec.kind]];
+    var i = list.findIndex(function (r) { return r.id === rec.id; });
+    if (i < 0) list.push(rec); else list[i] = rec;
+    db.outbox = db.outbox.filter(function (o) { return o.id !== rec.id; });
+    db.outbox.push(JSON.parse(JSON.stringify(rec)));
+    persist();
+    renderStatus();
+    sync(false);
+  }
+  function openSession() {
+    var open = C.live(db.sessions).filter(function (s) { return s.status !== 'closed'; });
+    return open.length ? open[open.length - 1] : null;
+  }
+  function lastOdo() {
+    var best = null, bt = 0;
+    C.live(db.sessions).forEach(function (s) {
+      var v = typeof s.odoEnd === 'number' ? s.odoEnd : s.odoLast;
+      if (typeof v === 'number' && s.upd >= bt) { best = v; bt = s.upd; }
+    });
+    return best;
+  }
+
+  /* ---------- sincronização ---------- */
+  function sync(manual) {
+    if (syncing) return;
+    if (!db.cfg.url) { if (manual) toast('Configure a URL da planilha em Configurações'); renderStatus(); return; }
+    if (!navigator.onLine) { if (manual) toast('Sem sinal. Tudo continua salvo no aparelho.'); renderStatus(); return; }
+    if (!db.outbox.length) { if (manual) toast('Tudo sincronizado com a planilha'); renderStatus(); return; }
+    syncing = true; renderStatus();
+    var batch = db.outbox.slice(0, 200);
+    fetch(db.cfg.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ token: db.cfg.token, ops: batch })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j || !j.ok) throw new Error((j && j.error) || 'resposta inválida');
+        var sent = {};
+        batch.forEach(function (b) { sent[b.id + '|' + b.upd] = 1; });
+        db.outbox = db.outbox.filter(function (o) { return !sent[o.id + '|' + o.upd]; });
+        db.lastSync = Date.now(); lastErr = '';
+        persist();
+        if (manual) toast(batch.length + (batch.length === 1 ? ' lançamento enviado' : ' lançamentos enviados') + ' para a planilha');
+      })
+      .catch(function (err) {
+        var m = String((err && err.message) || err);
+        lastErr = /fetch|network|load/i.test(m) ? 'sem conexão com a planilha' : m;
+        if (manual) toast('Não sincronizou: ' + lastErr);
+      })
+      .then(function () {
+        syncing = false; renderStatus();
+        if (!lastErr && db.outbox.length) setTimeout(function () { sync(false); }, 300);
+        if (ui.tab === 'config') render();
+      });
+  }
+
+  function pull() {
+    if (!db.cfg.url) { toast('Configure a URL da planilha primeiro'); return; }
+    if (!navigator.onLine) { toast('Sem sinal agora'); return; }
+    toast('Buscando dados da planilha...');
+    var u = db.cfg.url + (db.cfg.url.indexOf('?') < 0 ? '?' : '&') + 'action=pull&token=' + encodeURIComponent(db.cfg.token);
+    fetch(u).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.ok) throw new Error((j && j.error) || 'resposta inválida');
+      var added = 0;
+      (j.records || []).forEach(function (rec) {
+        var key = LISTS[rec.kind]; if (!key) return;
+        var list = db[key];
+        var i = list.findIndex(function (r) { return r.id === rec.id; });
+        if (i < 0) { list.push(rec); added++; }
+        else if ((rec.upd || 0) > (list[i].upd || 0)) { list[i] = rec; added++; }
+      });
+      persist(); render();
+      toast(added ? added + ' registros restaurados da planilha' : 'O aparelho já estava completo');
+    }).catch(function (err) { toast('Falha ao restaurar: ' + ((err && err.message) || err)); });
+  }
+
+  function exportBackup() {
+    var data = JSON.stringify({ app: 'jeep-transfer', exportedAt: new Date().toISOString(), db: db }, null, 2);
+    var blob = new Blob([data], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'jeep-transfer-backup-' + C.dayKey(Date.now()) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+
+  /* ---------- interface ---------- */
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+  function savedMsg(what) {
+    if (!db.cfg.url) return what + ' salvo no aparelho';
+    return navigator.onLine ? what + ' salvo' : what + ' salvo no aparelho. Sincroniza quando houver sinal';
+  }
+  function renderStatus() {
+    var el = document.getElementById('net'), tx = document.getElementById('netTxt');
+    var n = db.outbox.length, cls, txt;
+    if (!db.cfg.url) { cls = 'off'; txt = 'Só no aparelho'; }
+    else if (!navigator.onLine) { cls = 'wait'; txt = 'Sem sinal' + (n ? ' · ' + n : ''); }
+    else if (syncing) { cls = 'wait'; txt = 'Sincronizando'; }
+    else if (n) { cls = 'wait'; txt = n + (n === 1 ? ' pendente' : ' pendentes'); }
+    else { cls = 'ok'; txt = 'Sincronizado'; }
+    el.className = 'pill ' + cls; tx.textContent = txt;
+  }
+  function renderDate() {
+    var d = new Date();
+    var dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    var meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    document.getElementById('date').textContent = dias[d.getDay()] + ', ' + d.getDate() + ' ' + meses[d.getMonth()];
+  }
+  function render() {
+    document.querySelectorAll('.nb').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === ui.tab); });
+    renderStatus();
+    $main.innerHTML = (SCREENS[ui.tab] || SCREENS.home)();
+  }
+  function moneyIn(c) { return (c / 100).toFixed(2).replace('.', ','); }
+  function kmTxt(k) { return String(Math.round(k * 10) / 10).replace('.', ','); }
+  function tripRow(t, withDel) {
+    var extra = t.k > 0 ? ' · ' + kmTxt(t.k) + ' km · ' + C.brl(t.c / t.k) + '/km' : '';
+    return '<div class="item"><div class="left"><span class="tag ' + (t.p === 'uber' ? 'uber">Uber' : 'nn">99') + '</span>' +
+      '<span class="meta">' + C.clock(t.ts) + extra + '</span></div>' +
+      '<div class="row"><span class="val">' + C.brl(t.c) + '</span>' +
+      (withDel ? '<button class="del" data-act="delTrip" data-id="' + t.id + '" aria-label="Excluir corrida">✕</button>' : '') + '</div></div>';
+  }
+
+  var SCREENS = {};
+
+  SCREENS.home = function () {
+    var now = Date.now(), st = C.dayStats(db, C.dayKey(now), now, db.cfg);
+    var g = C.goal(st.lucro, db.cfg.meta, st.lh);
+    var s = openSession();
+    var proj = g.falta === 0 ? 'Meta batida' : (g.projMs !== null ? '≈ ' + C.hm(g.projMs) + ' no ritmo atual' : 'Sem projeção confiável');
+    var w = Math.max(0, Math.min(100, g.pct * 100));
+    var recent = st.trips.slice(-3).reverse();
+    var uw = st.fat ? st.uber / st.fat * 100 : 50;
+    var h = '<div class="stack">';
+
+    h += '<section class="hero"><div class="row"><span class="small" style="opacity:.85;font-weight:500;font-size:13px">Lucro estimado hoje</span>' +
+      '<span class="badge">' + st.n + (st.n === 1 ? ' corrida' : ' corridas') + '</span></div>' +
+      '<span class="big">' + C.brl(st.lucro) + '</span>' +
+      '<span style="font-size:13px;opacity:.85">de ' + C.brl(db.cfg.meta) + ' · ' + Math.round(g.pct * 100) + '%</span>' +
+      '<div class="bar"><div style="width:' + w + '%"></div></div>' +
+      '<div class="row" style="font-size:13px"><span>Faltam <b>' + C.brl(g.falta) + '</b></span><span style="opacity:.85">' + proj + '</span></div>' +
+      (st.worked && !st.fuelKnown ? '<div class="warn">Combustível ainda não descontado: atualize o hodômetro na Jornada.</div>' : '') +
+      '</section>';
+
+    if (s) {
+      h += '<section class="card" style="flex-direction:row;align-items:center;justify-content:space-between">' +
+        '<div style="display:flex;flex-direction:column;gap:4px"><span class="jchip ' + (s.status === 'pause' ? 'j-pause">Pausada' : 'j-on">Em andamento') + '</span>' +
+        '<span class="timer sm" data-timer>' + C.timer(C.sessionWorkedMs(s, now)) + '</span></div>' +
+        '<button class="btn light sm" data-act="go" data-tab="jornada">Jornada</button></section>';
+    } else {
+      h += '<section class="card" style="flex-direction:row;align-items:center;justify-content:space-between">' +
+        '<div style="display:flex;flex-direction:column;gap:4px"><span class="jchip j-off">Sem jornada</span><span class="small muted">Inicie para medir horas e km</span></div>' +
+        '<button class="btn primary sm" data-act="go" data-tab="jornada">Iniciar</button></section>';
+    }
+
+    h += '<div class="g2">' +
+      '<div class="kpi"><span class="l">Faturamento</span><span class="v">' + C.brl(st.fat) + '</span><span class="s">' + st.n + ' corridas</span></div>' +
+      '<div class="kpi"><span class="l">Km rodados</span><span class="v">' + (st.km !== null ? st.km + ' km' : 'sem dados') + '</span><span class="s">pelo hodômetro</span></div>' +
+      '<div class="kpi"><span class="l">Lucro por hora</span><span class="v ' + (st.lh === null ? '' : (st.lh < 0 ? 'neg' : 'pos')) + '">' + (st.lh !== null ? C.brl(st.lh) : 'sem dados') + '</span><span class="s">' + C.hm(st.ms) + ' trabalhadas</span></div>' +
+      '<div class="kpi"><span class="l">Lucro por km</span><span class="v">' + (st.lkm !== null ? C.brl(st.lkm) : 'sem dados') + '</span><span class="s">combustível ' + (st.cpk !== null ? C.brl(st.cpk) : 'sem dados') + '/km</span></div>' +
+      '</div>';
+
+    h += '<section class="card"><h3>Uber x 99 hoje</h3>' +
+      '<div class="split"><div style="background:#111113;width:' + uw + '%"></div><div style="background:#A7ADB5;width:' + (100 - uw) + '%"></div></div>' +
+      '<div class="row" style="font-size:13px"><span><span class="sw" style="background:#111113"></span> Uber <b>' + C.brl(st.uber) + '</b> (' + st.nUber + ')</span>' +
+      '<span><span class="sw" style="background:#A7ADB5"></span> 99 <b>' + C.brl(st.nn) + '</b> (' + st.nNn + ')</span></div></section>';
+
+    h += '<section class="card"><h3>Pago por km rodado com passageiro</h3><div class="g3">' +
+      '<div><div class="small muted">Geral</div><div class="b" style="font-size:18px">' + C.brl(st.rpkAll) + '</div></div>' +
+      '<div><div class="small muted">Uber</div><div class="b" style="font-size:18px">' + C.brl(st.rpkUber) + '</div></div>' +
+      '<div><div class="small muted">99</div><div class="b" style="font-size:18px">' + C.brl(st.rpkNn) + '</div></div></div>' +
+      '<p class="note">Média de ' + st.rpkN + ' corridas com km informado. Não inclui o trajeto até o passageiro; esse custo aparece no lucro por km do hodômetro.</p></section>';
+
+    h += '<section class="card"><h3>Custos de hoje</h3>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Combustível estimado</span><b>' + (st.fuelKnown ? C.brl(st.fuel) : 'sem km') + '</b></div>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Outras despesas</span><b>' + C.brl(st.desp) + '</b></div>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Abastecido (caixa)</span><b>' + C.brl(st.fuelPaid) + '</b></div></section>';
+
+    h += '<section class="card" style="gap:0"><h3 style="margin-bottom:6px">Últimos lançamentos</h3>' +
+      (recent.length ? recent.map(function (t) { return tripRow(t, false); }).join('') : '<div class="empty">Nenhuma corrida hoje. Toque no + para lançar.</div>') +
+      '</section></div>';
+    return h;
+  };
+
+  SCREENS.lancar = function () {
+    var isKm = ui.target === 'km';
+    var cents = parseInt(ui.digits || '0', 10);
+    var km = C.parseKm(ui.kmStr);
+    var rpk = cents > 0 && km > 0 ? C.brl(cents / km) + '/km' : 'informe valor e km';
+    var chips = isKm
+      ? [3, 5, 8, 10, 15].map(function (n) { return '<button class="chip" data-act="chipK" data-v="' + n + '">' + n + ' km</button>'; })
+      : [1000, 1500, 2000, 2500, 3000].map(function (c) { return '<button class="chip" data-act="chipV" data-v="' + c + '">' + (c / 100) + '</button>'; });
+    var keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', isKm ? ',' : '00', '0', 'del'].map(function (k) {
+      return '<button class="key" data-act="key" data-k="' + k + '" aria-label="' + (k === 'del' ? 'Apagar' : k) + '">' + (k === 'del' ? '⌫' : k) + '</button>';
+    });
+    return '<div class="stack">' +
+      '<div class="g2"><button class="seg uber' + (ui.plat === 'uber' ? ' on' : '') + '" data-act="plat" data-p="uber">Uber</button>' +
+      '<button class="seg nn' + (ui.plat === '99' ? ' on' : '') + '" data-act="plat" data-p="99">99</button></div>' +
+      '<div style="display:grid;grid-template-columns:3fr 2fr;gap:10px">' +
+      '<button class="field' + (isKm ? '' : ' on') + '" data-act="target" data-t="valor"><span class="l">Valor recebido</span><span class="v">' + C.brl(cents) + '</span></button>' +
+      '<button class="field' + (isKm ? ' on' : '') + '" data-act="target" data-t="km"><span class="l">Km da corrida</span>' +
+      (ui.kmStr ? '<span class="v">' + ui.kmStr + ' km</span>' : '<span class="ph">opcional</span>') + '</button></div>' +
+      '<div class="rpk"><span>Pago por km</span><b>' + rpk + '</b></div>' +
+      '<div class="g5">' + chips.join('') + '</div>' +
+      '<div class="keypad">' + keys.join('') + '</div>' +
+      '<button class="btn green" data-act="save">Salvar ' + C.brl(cents) + '</button>' +
+      '<button class="btn ghost" data-act="undo">Desfazer último lançamento</button></div>';
+  };
+
+  SCREENS.jornada = function () {
+    var now = Date.now(), s = openSession();
+    var today = C.live(db.sessions).filter(function (x) { return x.status === 'closed' && C.dayKey(x.start) === C.dayKey(now); });
+    var h = '<div class="stack">';
+    if (!s) {
+      var lo = lastOdo();
+      h += '<section class="card" style="padding:20px;gap:14px"><h3 style="font-size:18px">Nenhuma jornada aberta</h3>' +
+        '<label class="lb">Hodômetro inicial (km)<input class="in" id="odoStart" inputmode="numeric" pattern="[0-9]*" value="' + (lo !== null ? lo : '') + '" placeholder="ex.: 48210"></label>' +
+        '<button class="btn primary" data-act="startJ" style="height:60px;font-size:18px">Iniciar jornada</button></section>';
+    } else if (ui.closing) {
+      h += '<section class="card" style="padding:20px;gap:14px"><h3 style="font-size:18px">Encerrar jornada</h3>' +
+        '<label class="lb">Hodômetro final (km)<input class="in" id="odoEnd" inputmode="numeric" pattern="[0-9]*" value="' + (typeof s.odoLast === 'number' && s.odoLast > s.odoStart ? s.odoLast : '') + '" placeholder="início: ' + s.odoStart + '"></label>' +
+        '<span id="kmPrev" class="b" style="font-size:14px">' + kmPreview(s, s.odoLast > s.odoStart ? s.odoLast : null) + '</span>' +
+        '<button class="btn danger" data-act="confirmClose" style="height:60px;font-size:18px">Confirmar encerramento</button>' +
+        '<button class="btn ghost" data-act="cancelClose">Voltar</button></section>';
+    } else {
+      var km = C.sessionKm(s);
+      h += '<section class="card" style="align-items:center;padding:24px 20px">' +
+        '<span class="jchip ' + (s.status === 'pause' ? 'j-pause">Pausada' : 'j-on">Em andamento') + '</span>' +
+        '<span class="timer" data-timer>' + C.timer(C.sessionWorkedMs(s, now)) + '</span>' +
+        '<div class="row" style="gap:20px;font-size:13px" ><span class="muted">Pausas <b style="color:#111827" data-pause>' + C.hm(C.sessionPausedMs(s, now)) + '</b></span>' +
+        '<span class="muted">Início <b style="color:#111827">' + C.clock(s.start) + '</b></span>' +
+        '<span class="muted">Km <b style="color:#111827">' + (km !== null ? km : '0') + '</b></span></div></section>' +
+        '<div class="g2"><button class="btn primary" style="height:64px;font-size:18px" data-act="' + (s.status === 'pause' ? 'resume">Retomar' : 'pause">Pausar') + '</button>' +
+        '<button class="btn odanger" style="height:64px;font-size:18px" data-act="askClose">Encerrar</button></div>' +
+        '<section class="card"><h3>Atualizar hodômetro</h3>' +
+        '<div class="inline"><input class="in" id="odoNow" inputmode="numeric" pattern="[0-9]*" placeholder="início: ' + s.odoStart + '" value="' + (s.odoLast > s.odoStart ? s.odoLast : '') + '">' +
+        '<button class="btn primary sm" data-act="updOdo">Atualizar</button></div>' +
+        '<p class="note">Atualize nas paradas para o lucro descontar o combustível ao longo do dia.</p></section>';
+    }
+    if (today.length) {
+      h += '<section class="card" style="gap:0"><h3 style="margin-bottom:6px">Jornadas encerradas hoje</h3>' + today.map(function (x) {
+        var k = C.sessionKm(x);
+        return '<div class="item"><span class="meta">' + C.clock(x.start) + ' às ' + C.clock(x.end) + ' · ' + C.hm(C.sessionWorkedMs(x, now)) + '</span><span class="val">' + (k !== null ? k + ' km' : '') + '</span></div>';
+      }).join('') + '</section>';
+    }
+    h += '<p class="note" style="text-align:center">O cronômetro é salvo por horário. Fechar o app ou ficar sem sinal não perde a jornada.</p></div>';
+    return h;
+  };
+
+  function kmPreview(s, val) {
+    if (val === null || val === undefined || isNaN(val)) return '<span class="muted">Informe o hodômetro final</span>';
+    if (val < s.odoStart) return '<span class="neg">Menor que o inicial (' + s.odoStart + ')</span>';
+    return '<span class="pos">' + (val - s.odoStart) + ' km rodados nesta jornada</span>';
+  }
+
+  SCREENS.custos = function () {
+    var now = Date.now(), st = C.dayStats(db, C.dayKey(now), now, db.cfg);
+    var cats = ['Lavagem', 'Estacionamento', 'Manutenção', 'Outro'];
+    var list = st.exps.slice().reverse();
+    return '<div class="stack">' +
+      '<section class="card"><h3>Abastecimento rápido</h3><div class="g4">' +
+      [5000, 10000, 15000, 20000].map(function (c) { return '<button class="chip" style="height:52px;font-weight:700" data-act="fuel" data-v="' + c + '">' + (c / 100) + '</button>'; }).join('') +
+      '</div><div class="inline"><input class="in" id="fuelOther" inputmode="decimal" placeholder="Outro valor (R$)">' +
+      '<button class="btn primary sm" data-act="fuelOther">Lançar</button></div>' +
+      '<p class="note">Etanol ' + C.brl(db.cfg.fuelPrice) + ' · ' + kmTxt(db.cfg.kmPerL) + ' km/L · ' + C.brl(C.costPerKm(db.cfg)) + '/km. No lucro, o combustível é estimado pelos km; o abastecimento entra no caixa, sem contar duas vezes.</p></section>' +
+      '<section class="card"><h3>Outra despesa</h3><div class="g2">' +
+      cats.map(function (c) { return '<button class="chip' + (ui.cat === c ? ' on' : '') + '" data-act="cat" data-v="' + c + '">' + c + '</button>'; }).join('') +
+      '</div><div class="g3">' +
+      [1000, 2000, 3000, 5000, 10000, 15000].map(function (c) { return '<button class="chip" data-act="exp" data-v="' + c + '">' + C.brl(c).replace(',00', '') + '</button>'; }).join('') +
+      '</div><div class="inline"><input class="in" id="expOther" inputmode="decimal" placeholder="Outro valor (R$)">' +
+      '<button class="btn primary sm" data-act="expOther">Lançar</button></div>' +
+      '<p class="note">Toque na categoria e depois no valor. Salva na hora.</p></section>' +
+      '<section class="card" style="gap:0"><div class="row" style="margin-bottom:6px"><h3>Lançado hoje</h3><b class="neg">' + C.brl(st.desp + st.fuelPaid) + '</b></div>' +
+      (list.length ? list.map(function (x) {
+        return '<div class="item"><span class="meta"><b style="color:#111827">' + x.cat + '</b> · ' + C.clock(x.ts) + '</span><div class="row"><span class="val">' + C.brl(x.c) + '</span>' +
+          '<button class="del" data-act="delExp" data-id="' + x.id + '" aria-label="Excluir despesa">✕</button></div></div>';
+      }).join('') : '<div class="empty">Nenhuma despesa hoje.</div>') +
+      '</section></div>';
+  };
+
+  SCREENS.hist = function () {
+    var now = Date.now(), days = [], i;
+    for (i = 6; i >= 0; i--) {
+      var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i);
+      var key = C.dayKey(d.getTime());
+      days.push({ key: key, label: i === 0 ? 'Hoje' : WD[d.getDay()], st: C.dayStats(db, key, now, db.cfg) });
+    }
+    var maxV = db.cfg.meta * 1.25;
+    days.forEach(function (x) { if (x.st.lucro > maxV) maxV = x.st.lucro; });
+    var tot = 0, worked = 0, hit = 0, fu = 0, fn = 0, cu = 0, cn = 0;
+    days.forEach(function (x) {
+      if (x.st.worked) { tot += x.st.lucro; worked++; if (x.st.lucro >= db.cfg.meta) hit++; }
+      fu += x.st.uber; fn += x.st.nn; cu += x.st.nUber; cn += x.st.nNn;
+    });
+    var cols = days.map(function (x) {
+      var v = x.st.lucro, hgt, col, lab;
+      if (!x.st.worked) { hgt = 4; col = '#D5D8DD'; lab = 'folga'; }
+      else { hgt = Math.max(6, Math.max(0, v) / maxV * 120); col = v >= db.cfg.meta ? '#16A34A' : '#111113'; lab = Math.round(v / 100); }
+      return '<div class="col"><span class="lab">' + lab + '</span><div class="bb" style="height:' + hgt + 'px;background:' + col + '"></div></div>';
+    }).join('');
+    var todayTrips = days[6].st.trips.slice().reverse();
+    return '<div class="stack">' +
+      '<section class="card"><h3>Lucro · últimos 7 dias</h3>' +
+      '<div class="chart"><div class="metaline" style="bottom:' + (db.cfg.meta / maxV * 120) + 'px"></div>' + cols + '</div>' +
+      '<div class="days">' + days.map(function (x) { return '<span>' + x.label + '</span>'; }).join('') + '</div>' +
+      '<p class="note">Linha tracejada: meta de ' + C.brl(db.cfg.meta) + '. Verde: dia acima da meta.</p></section>' +
+      '<div class="g3">' +
+      '<div class="kpi"><span class="l">Lucro 7 dias</span><span class="v" style="font-size:16px">' + C.brl(tot) + '</span></div>' +
+      '<div class="kpi"><span class="l">Média/dia</span><span class="v" style="font-size:16px">' + (worked ? C.brl(tot / worked) : 'sem dados') + '</span></div>' +
+      '<div class="kpi"><span class="l">Na meta</span><span class="v" style="font-size:16px">' + hit + ' de ' + worked + '</span></div></div>' +
+      '<section class="card"><h3>Faturamento por plataforma · 7 dias</h3>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Uber</span><b>' + C.brl(fu) + ' · ' + cu + ' corridas</b></div>' +
+      '<div class="row" style="font-size:14px"><span class="muted">99</span><b>' + C.brl(fn) + ' · ' + cn + ' corridas</b></div>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Ticket médio</span><b>Uber ' + (cu ? C.brl(fu / cu) : '-') + ' · 99 ' + (cn ? C.brl(fn / cn) : '-') + '</b></div></section>' +
+      '<section class="card" style="gap:0"><h3 style="margin-bottom:6px">Corridas de hoje</h3>' +
+      (todayTrips.length ? todayTrips.map(function (t) { return tripRow(t, true); }).join('') : '<div class="empty">Nenhuma corrida hoje.</div>') +
+      '</section></div>';
+  };
+
+  SCREENS.config = function () {
+    var c = db.cfg;
+    return '<div class="stack">' +
+      '<section class="card" style="gap:12px"><h3>Operação</h3>' +
+      '<label class="lb">Meta de lucro diário (R$)<input class="in" id="cMeta" inputmode="decimal" value="' + moneyIn(c.meta) + '"></label>' +
+      '<div class="g2"><label class="lb">Preço do etanol (R$/L)<input class="in" id="cFuel" inputmode="decimal" value="' + moneyIn(c.fuelPrice) + '"></label>' +
+      '<label class="lb">Consumo (km/L)<input class="in" id="cKmL" inputmode="decimal" value="' + kmTxt(c.kmPerL) + '"></label></div>' +
+      '<p class="note">Custo de combustível atual: ' + C.brl(C.costPerKm(c)) + ' por km.</p></section>' +
+      '<section class="card" style="gap:12px"><h3>Planilha Google (sincronização)</h3>' +
+      '<label class="lb">URL do Apps Script<input class="in txt" id="cUrl" type="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://script.google.com/macros/s/.../exec" value="' + (c.url || '').replace(/"/g, '&quot;') + '"></label>' +
+      '<label class="lb">Código de acesso<input class="in txt" id="cToken" autocapitalize="off" autocorrect="off" spellcheck="false" value="' + (c.token || '').replace(/"/g, '&quot;') + '"></label>' +
+      '<button class="btn primary" data-act="saveCfg">Salvar configurações</button></section>' +
+      '<section class="card" style="gap:12px"><h3>Dados</h3>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Pendentes de envio</span><b>' + db.outbox.length + '</b></div>' +
+      '<div class="row" style="font-size:14px"><span class="muted">Última sincronização</span><b>' + (db.lastSync ? new Date(db.lastSync).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'nunca') + '</b></div>' +
+      (lastErr ? '<div class="warn">Último erro: ' + lastErr + '</div>' : '') +
+      '<button class="btn light" data-act="syncNow">Sincronizar agora</button>' +
+      '<button class="btn light" data-act="pull">Restaurar da planilha</button>' +
+      '<button class="btn light" data-act="export">Baixar backup (arquivo)</button>' +
+      '<p class="note">Os dados ficam no iPhone e são copiados para a planilha quando há internet. Se trocar de aparelho ou apagar o app, use "Restaurar da planilha".</p></section>' +
+      '<p class="note" style="text-align:center">Jeep Transfer · versão 1.0</p></div>';
+  };
+
+  /* ---------- ações ---------- */
+  function addExp(cat, c) {
+    if (!(c > 0)) { toast('Valor inválido'); return; }
+    put({ id: uid(), kind: 'expense', ts: Date.now(), cat: cat, c: c, del: 0 });
+    toast(savedMsg(cat + ' ' + C.brl(c)));
+    render();
+  }
+  function readInt(id) { var el = document.getElementById(id); return el ? parseInt(String(el.value).replace(/\D/g, ''), 10) : NaN; }
+
+  var ACTS = {
+    go: function (b) { ui.tab = b.dataset.tab; ui.closing = false; render(); $main.scrollTop = 0; },
+    sync: function () { if (!db.cfg.url) { ui.tab = 'config'; render(); toast('Configure a planilha para sincronizar'); } else sync(true); },
+    plat: function (b) { ui.plat = b.dataset.p; render(); },
+    target: function (b) { ui.target = b.dataset.t; render(); },
+    chipV: function (b) { ui.digits = b.dataset.v; render(); },
+    chipK: function (b) { ui.kmStr = b.dataset.v; render(); },
+    key: function (b) {
+      var k = b.dataset.k;
+      if (ui.target === 'km') {
+        var m = ui.kmStr;
+        if (k === 'del') m = m.slice(0, -1);
+        else if (k === ',') { if (m && m.indexOf(',') < 0) m += ','; }
+        else if (m.indexOf(',') >= 0) { if (m.split(',')[1].length < 1) m += k; }
+        else if (m.length < 3) m = (m + k).replace(/^0+(?=\d)/, '');
+        ui.kmStr = m;
+      } else {
+        var d = ui.digits;
+        if (k === 'del') d = d.slice(0, -1);
+        else if (d.length < 6) d = (d + k).replace(/^0+/, '');
+        ui.digits = d;
+      }
+      render();
+    },
+    save: function () {
+      var c = parseInt(ui.digits || '0', 10);
+      if (!c) { toast('Digite ou toque em um valor'); return; }
+      var k = C.parseKm(ui.kmStr); if (!(k > 0)) k = 0;
+      put({ id: uid(), kind: 'trip', ts: Date.now(), p: ui.plat, c: c, k: k, del: 0 });
+      toast(savedMsg((ui.plat === 'uber' ? 'Uber ' : '99 ') + C.brl(c) + (k ? ' (' + C.brl(c / k) + '/km)' : '')));
+      ui.digits = ''; ui.kmStr = ''; ui.target = 'valor';
+      render();
+    },
+    undo: function () {
+      var today = C.dayKey(Date.now());
+      var t = C.live(db.trips).filter(function (x) { return C.dayKey(x.ts) === today; }).pop();
+      if (!t) { toast('Nenhuma corrida para desfazer hoje'); return; }
+      t.del = 1; put(t); toast('Removido: ' + C.brl(t.c)); render();
+    },
+    startJ: function () {
+      var v = readInt('odoStart');
+      if (isNaN(v)) { toast('Informe o hodômetro inicial'); return; }
+      put({ id: uid(), kind: 'session', start: Date.now(), end: 0, status: 'on', pausedMs: 0, pauseStart: 0, odoStart: v, odoLast: v, odoEnd: null, del: 0 });
+      toast(savedMsg('Jornada iniciada')); render();
+    },
+    pause: function () { var s = openSession(); if (!s) return; s.status = 'pause'; s.pauseStart = Date.now(); put(s); toast('Jornada pausada'); render(); },
+    resume: function () {
+      var s = openSession(); if (!s) return;
+      s.pausedMs = (s.pausedMs || 0) + (Date.now() - s.pauseStart); s.pauseStart = 0; s.status = 'on';
+      put(s); toast('Jornada retomada'); render();
+    },
+    updOdo: function () {
+      var s = openSession(); if (!s) return;
+      var v = readInt('odoNow');
+      if (isNaN(v)) { toast('Informe o hodômetro atual'); return; }
+      if (v < s.odoStart) { toast('Menor que o hodômetro inicial (' + s.odoStart + ')'); return; }
+      s.odoLast = v; put(s); toast('Hodômetro atualizado: ' + (v - s.odoStart) + ' km na jornada'); render();
+    },
+    askClose: function () { ui.closing = true; render(); },
+    cancelClose: function () { ui.closing = false; render(); },
+    confirmClose: function () {
+      var s = openSession(); if (!s) return;
+      var v = readInt('odoEnd');
+      if (isNaN(v)) { toast('Informe o hodômetro final'); return; }
+      if (v < s.odoStart) { toast('Hodômetro final menor que o inicial'); return; }
+      var now = Date.now();
+      if (s.status === 'pause' && s.pauseStart) { s.pausedMs = (s.pausedMs || 0) + (now - s.pauseStart); s.pauseStart = 0; }
+      s.end = now; s.odoEnd = v; s.odoLast = v; s.status = 'closed';
+      put(s); ui.closing = false; ui.tab = 'home';
+      toast(savedMsg('Jornada encerrada: ' + (v - s.odoStart) + ' km')); render();
+    },
+    fuel: function (b) { addExp('Etanol', parseInt(b.dataset.v, 10)); },
+    fuelOther: function () { addExp('Etanol', C.parseMoney(document.getElementById('fuelOther').value)); },
+    cat: function (b) { ui.cat = b.dataset.v; render(); },
+    exp: function (b) { addExp(ui.cat, parseInt(b.dataset.v, 10)); },
+    expOther: function () { addExp(ui.cat, C.parseMoney(document.getElementById('expOther').value)); },
+    delTrip: function (b) {
+      var t = db.trips.find(function (x) { return x.id === b.dataset.id; });
+      if (!t || !confirm('Excluir a corrida de ' + C.brl(t.c) + '?')) return;
+      t.del = 1; put(t); toast('Corrida excluída'); render();
+    },
+    delExp: function (b) {
+      var x = db.expenses.find(function (e) { return e.id === b.dataset.id; });
+      if (!x || !confirm('Excluir ' + x.cat + ' de ' + C.brl(x.c) + '?')) return;
+      x.del = 1; put(x); toast('Despesa excluída'); render();
+    },
+    saveCfg: function () {
+      var meta = C.parseMoney(document.getElementById('cMeta').value);
+      var fuel = C.parseMoney(document.getElementById('cFuel').value);
+      var kml = C.parseKm(document.getElementById('cKmL').value);
+      var url = document.getElementById('cUrl').value.trim();
+      var token = document.getElementById('cToken').value.trim();
+      if (!(meta > 0) || !(fuel > 0) || !(kml > 0)) { toast('Confira meta, preço e consumo'); return; }
+      if (url && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(url)) { toast('A URL deve terminar em /exec'); return; }
+      db.cfg.meta = meta; db.cfg.fuelPrice = fuel; db.cfg.kmPerL = kml; db.cfg.url = url; db.cfg.token = token;
+      persist(); toast('Configurações salvas'); render(); sync(false);
+    },
+    syncNow: function () { sync(true); },
+    pull: function () { if (confirm('Buscar os dados da planilha e juntar com os do aparelho?')) pull(); },
+    'export': function () { exportBackup(); }
+  };
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (!b) return;
+    var fn = ACTS[b.dataset.act];
+    if (fn) fn(b);
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target.id === 'odoEnd') {
+      var s = openSession(); if (!s) return;
+      var v = parseInt(String(e.target.value).replace(/\D/g, ''), 10);
+      document.getElementById('kmPrev').innerHTML = kmPreview(s, isNaN(v) ? null : v);
+    }
+  });
+
+  /* ---------- ciclo ---------- */
+  setInterval(function () {
+    var s = openSession();
+    if (s) {
+      var now = Date.now();
+      var tx = C.timer(C.sessionWorkedMs(s, now));
+      document.querySelectorAll('[data-timer]').forEach(function (el) { el.textContent = tx; });
+      var p = document.querySelector('[data-pause]');
+      if (p) p.textContent = C.hm(C.sessionPausedMs(s, now));
+    }
+  }, 1000);
+  setInterval(function () {
+    renderDate();
+    if (ui.tab === 'home') { var y = $main.scrollTop; render(); $main.scrollTop = y; }
+    sync(false);
+  }, 60000);
+  window.addEventListener('online', function () { renderStatus(); sync(false); });
+  window.addEventListener('offline', renderStatus);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') { renderDate(); render(); sync(false); }
+  });
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
+
+  renderDate();
+  render();
+  sync(false);
+})();
+</script>
+</body>
+</html>
